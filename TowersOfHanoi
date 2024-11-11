@@ -5,45 +5,43 @@ using namespace std;
 struct HanoiRecord {
     int _numberDisks;
     int _sourcePole, _sparePole, _destinationPole;
-
-    // Constructors
-    HanoiRecord() : _numberDisks(3), _sourcePole(1), _sparePole(2), _destinationPole(3) {}
-    HanoiRecord(int numberDisks, int sourcePole, int sparePole, int destinationPole)
-        : _numberDisks(numberDisks), _sourcePole(sourcePole), _sparePole(sparePole), _destinationPole(destinationPole) {}
+    HanoiRecord() { _sourcePole = _sparePole = _destinationPole = 0; _numberDisks = 0; }
+    HanoiRecord(int numberDisks, int sourcePole, int sparePole, int destinationPole) {
+        _numberDisks = numberDisks;
+        _sourcePole = sourcePole;
+        _sparePole = sparePole;
+        _destinationPole = destinationPole;
+    }
 };
 
 class stack {
 private:
     struct HanoiRecordLink {
         HanoiRecord value;
-        HanoiRecordLink *next;
+        HanoiRecordLink* next;
     };
-    HanoiRecordLink *_top;
+    HanoiRecordLink* _top;
 
 public:
-    stack() : _top(nullptr) {}
-
+    stack() { _top = nullptr; }
     void push(HanoiRecord record) {
-        HanoiRecordLink *newLink = new HanoiRecordLink;
+        HanoiRecordLink* newLink = new HanoiRecordLink;
         newLink->value = record;
         newLink->next = _top;
         _top = newLink;
     }
-
     HanoiRecord pop() {
         assert(_top != nullptr && "Stack underflow");
-        HanoiRecordLink *temp = _top;
+        HanoiRecordLink* temp = _top;
         HanoiRecord record = _top->value;
         _top = _top->next;
         delete temp;
         return record;
     }
-
     HanoiRecord top() {
         assert(_top != nullptr && "Stack is empty");
         return _top->value;
     }
-
     bool is_empty() {
         return _top == nullptr;
     }
@@ -51,19 +49,18 @@ public:
 
 int main() {
     int numberOfDisks = 0;
-    cout << "How many disks? ";
-    cin >> numberOfDisks;
-
+    HanoiRecord tRecord;
     stack HanoiStack;
+    cout << "How many disks? " << flush;
+    cin >> numberOfDisks;
     HanoiStack.push(HanoiRecord(numberOfDisks, 1, 2, 3));  // Initialize with the full problem state
-
+    
     while (!HanoiStack.is_empty()) {
         HanoiRecord current = HanoiStack.pop();
-
+        
         if (current._numberDisks == 1) {
             cout << "Move disk from pole " << current._sourcePole << " to pole " << current._destinationPole << endl;
         } else {
-            // Push in reverse order to simulate recursive calls
             HanoiStack.push(HanoiRecord(current._numberDisks - 1, current._sparePole, current._sourcePole, current._destinationPole));
             HanoiStack.push(HanoiRecord(1, current._sourcePole, current._sparePole, current._destinationPole));
             HanoiStack.push(HanoiRecord(current._numberDisks - 1, current._sourcePole, current._destinationPole, current._sparePole));
@@ -72,3 +69,4 @@ int main() {
 
     return 0;
 }
+
